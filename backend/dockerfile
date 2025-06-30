@@ -1,0 +1,20 @@
+# Imagen base
+FROM golang:1.23
+
+# Crear carpeta de trabajo dentro del contenedor
+WORKDIR /app
+
+# Copiar los archivos de Go al contenedor
+COPY . .
+
+# Descargar las dependencias
+RUN go mod tidy
+
+# Compilar el ejecutable
+RUN go build -o main ./cmd
+
+# Exponer el puerto donde correrá tu API
+EXPOSE 8080
+
+# Comando que ejecutará el contenedor
+CMD ["./main"]
