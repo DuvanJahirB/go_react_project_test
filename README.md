@@ -93,6 +93,20 @@ Una vez que los servicios estén en ejecución con Docker Compose:
 -   **Backend**: La API del backend estará disponible en `http://localhost:8088`.
 -   **MongoDB**: La base de datos MongoDB estará accesible internamente por el backend y externamente en `mongodb://localhost:27017`.
 
+## Usuario por Defecto
+
+La aplicación incluye un usuario por defecto para que puedas iniciar sesión y probar la funcionalidad de inmediato.
+
+**Email**:
+```
+admin@example.com
+```
+
+**Contraseña**:
+```
+admin123
+```
+
 ## Documentación API (Swagger)
 
 El backend de Go incluye documentación interactiva de la API generada con Swagger (OpenAPI).

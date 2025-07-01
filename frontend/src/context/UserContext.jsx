@@ -28,7 +28,7 @@ export const UserContextProvider = ({children}) => {
             return { success: true};
         } catch (error) {
             console.error('Login error:', error);
-            return { success: false, message: error.message};
+            return { success: false, message: error?.response?.data?.error || 'Somethimg is wrong'};
         } finally {
             setLoading(false);
         }
@@ -42,7 +42,7 @@ export const UserContextProvider = ({children}) => {
             // sessionStorage.setItem("token",response.data.token);
         } catch (error) {
             console.error('Register error:', error.response.data.error);
-            return { success: false, message: error.response.data.error};
+            return { success: false, message: error.response.data.error || 'Somethimg is wrong'};
         } finally {
             setLoading(false);
         }

@@ -93,7 +93,7 @@ export const FormContextProvider = ({children}) => {
             setErrors(newErrors)
             return
         }
-        toast.loading('Send Information');
+        // toast.loading('Send Information');
         if (activeTab === 'register') {
             const val = await register(formData.fullName,formData.email,formData.password);
             if(val.success) {
