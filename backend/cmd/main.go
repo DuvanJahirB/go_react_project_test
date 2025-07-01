@@ -15,8 +15,20 @@ import (
     "go.mongodb.org/mongo-driver/bson"
     "go.mongodb.org/mongo-driver/mongo"
     "go.mongodb.org/mongo-driver/mongo/options"
+
+    _ "backend/docs" // Importar los docs generados por Swag
+    swaggerFiles "github.com/swaggo/files"
+    ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// @title Go + React Project API
+// @version 1.0
+// @description This is a sample server for a Go + React project.
+// @host localhost:8088
+// @BasePath /
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 
 func main() {
     mongoURI := os.Getenv("MONGO_URI")
@@ -58,7 +70,8 @@ func main() {
     protected.Use(middleware.AuthMiddleware())
     protected.GET("/profile", handlers.GetProfile)
 
-    
+    // Swagger UI
+    router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
     port := os.Getenv("PORT")
     if port == "" {

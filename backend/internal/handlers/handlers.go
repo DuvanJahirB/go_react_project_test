@@ -29,6 +29,17 @@ func init() {
 }
 
 
+// RegisterUser godoc
+// @Summary Register a new user
+// @Description Register a new user with name, email, and password
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param user body models.User true "User registration data"
+// @Success 201 {object} models.MessageResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /user [post]
 func RegisterUser(c *gin.Context) {
     var user models.User
     if err := c.BindJSON(&user); err != nil {
@@ -69,6 +80,18 @@ func RegisterUser(c *gin.Context) {
 }
 
 
+// LoginUser godoc
+// @Summary Log in a user
+// @Description Authenticate user and return a JWT token
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param loginData body models.LoginRequest true "User login credentials"
+// @Success 200 {object} models.TokenResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /auth/login [post]
 func LoginUser(c *gin.Context) {
 
     var loginData struct {
@@ -112,6 +135,18 @@ func LoginUser(c *gin.Context) {
 }
 
 
+// GetProfile godoc
+// @Summary Get user profile
+// @Description Get the profile information of the authenticated user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Success 200 {object} models.ProfileResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /profile [get]
 func GetProfile(c *gin.Context) {
     email, exists := c.Get("email")
     if !exists {
