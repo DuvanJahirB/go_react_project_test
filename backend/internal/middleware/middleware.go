@@ -3,11 +3,21 @@ package middleware
 import (
     "net/http"
     "strings"
-
+    "os"
+    "log"
     "github.com/dgrijalva/jwt-go"
     "github.com/gin-gonic/gin"
 )
 
+var jwtKey []byte
+
+func init() {
+    key := os.Getenv("JWT_SECRET_KEY")
+    if key == "" {
+        log.Fatal("JWT_SECRET_KEY environment variable not set")
+    }
+    jwtKey = []byte(key)
+}
 
 // AuthMiddleware es un middleware de Gin para la autenticación basada en JWT.
 // Verifica la presencia de un token en la cabecera Authorization, lo valida y, si es válido,
@@ -29,7 +39,7 @@ func AuthMiddleware() gin.HandlerFunc {
         // Parsea y valida el token.
         token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
             // La clave secreta debe ser la misma que se usó para firmar el token.
-            return []byte("my_secret_key"), nil
+            return jwtKey, nil
         })
 
         // Si hay un error en el parseo o el token no es válido, devuelve un error.

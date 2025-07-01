@@ -7,20 +7,25 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-func FormatValidationError(err error) map[string]string {
-	errors := make(map[string]string)
-	for _, err := range err.(validator.ValidationErrors) {
-		field := strings.ToLower(err.Field())
-		switch err.Tag() {
+func FormatValidationError(err error) string {
+	validationErrors, ok := err.(validator.ValidationErrors)
+	if !ok {
+		return "Invalid validation error"
+	}
+
+	for _, fieldErr := range validationErrors {
+		field := strings.ToLower(fieldErr.Field())
+		switch fieldErr.Tag() {
 		case "required":
-			errors[field] = fmt.Sprintf("%s is required", field)
+			return fmt.Sprintf("%s is required", field)
 		case "email":
-			errors[field] = fmt.Sprintf("%s is not a valid email", field)
+			return fmt.Sprintf("%s is not a valid email", field)
 		case "min":
-			errors[field] = fmt.Sprintf("%s must be at least %s characters long", field, err.Param())
+			return fmt.Sprintf("%s must be at least %s characters long", field, fieldErr.Param())
 		default:
-			errors[field] = fmt.Sprintf("%s is not valid", field)
+			return fmt.Sprintf("%s is not valid", field)
 		}
 	}
-	return errors
+
+	return "Validation error"
 }

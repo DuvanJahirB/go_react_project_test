@@ -8,14 +8,30 @@ services:
       - "27017:27017"
     volumes:
       - ./mongo-data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh mongo:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   backend:
     build: ./backend
     ports:
       - "8088:8080"
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
     environment:
-      - MONGO_URI=mongodb://mongo:27017/mydb
+      - MONGO_URI=mongodb://mongo:27017
+      - PORT=8080
       - JWT_SECRET_KEY=your_super_secret_jwt_key
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3020:80"
+    depends_on:
+      - backend
+    environment:
+      - VITE_BACKEND_URL=http://backend:8080
   

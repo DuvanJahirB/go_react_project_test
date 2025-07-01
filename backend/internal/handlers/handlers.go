@@ -37,8 +37,8 @@ func RegisterUser(c *gin.Context) {
     }
 
     if err := validate.Struct(user); err != nil {
-        errors := utils.FormatValidationError(err)
-        c.JSON(http.StatusBadRequest, gin.H{"errors": errors})
+        errorMessage := utils.FormatValidationError(err)
+        c.JSON(http.StatusBadRequest, gin.H{"error": errorMessage})
         return
     }
 
@@ -82,8 +82,8 @@ func LoginUser(c *gin.Context) {
     }
 
     if err := validate.Struct(loginData); err != nil {
-        errors := utils.FormatValidationError(err)
-        c.JSON(http.StatusBadRequest, gin.H{"errors": errors})
+        errorMessage := utils.FormatValidationError(err)
+        c.JSON(http.StatusBadRequest, gin.H{"error": errorMessage})
         return
     }
 

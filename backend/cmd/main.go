@@ -3,12 +3,14 @@ package main
 import (
     "context"
     "log"
+    "os"
     "time"
 
     "backend/internal/handlers"
     "backend/internal/middleware"
     "backend/internal/models"
     "backend/internal/utils"
+    "github.com/gin-contrib/cors"
     "github.com/gin-gonic/gin"
     "go.mongodb.org/mongo-driver/bson"
     "go.mongodb.org/mongo-driver/mongo"
@@ -16,10 +18,13 @@ import (
 )
 
 
-
 func main() {
-    
-    client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://mongo:27017"))
+    mongoURI := os.Getenv("MONGO_URI")
+    if mongoURI == "" {
+        mongoURI = "mongodb://mongo:27017"
+    }
+
+    client, err := mongo.NewClient(options.Client().ApplyURI(mongoURI))
     if err != nil {
         log.Fatal(err)
     }
@@ -35,6 +40,17 @@ func main() {
     seedDatabase(handlers.UserCollection)
 
     router := gin.Default()
+
+    // Configuración de CORS
+    router.Use(cors.New(cors.Config{
+        AllowOrigins:     []string{"*"}, // Permite todos los orígenes para desarrollo
+        AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
+        AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
+        ExposeHeaders:    []string{"Content-Length"},
+        AllowCredentials: true,
+        MaxAge:           12 * time.Hour,
+    }))
+
     router.POST("/user", handlers.RegisterUser)
     router.POST("/auth/login", handlers.LoginUser)
 
@@ -44,7 +60,11 @@ func main() {
 
     
 
-    router.Run(":8080")
+    port := os.Getenv("PORT")
+    if port == "" {
+        port = "8080"
+    }
+    router.Run(":" + port)
 }
 
 func seedDatabase(userCollection *mongo.Collection) {
