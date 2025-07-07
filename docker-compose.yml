@@ -25,13 +25,16 @@ services:
       - MONGO_URI=mongodb://mongo:27017
       - PORT=8080
       - JWT_SECRET_KEY=your_super_secret_jwt_key
+      - GIN_MODE=release
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        # Se debe configurar de esta forma debido a que es una aplicacion web 
+        # y ya no hace parte de la red docker
+        VITE_BACKEND_URL: http://localhost:8088
     ports:
       - "3020:80"
     depends_on:
       - backend
-    environment:
-      - VITE_BACKEND_URL=http://backend:8080
-  
